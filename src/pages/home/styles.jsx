@@ -282,6 +282,7 @@ export const DivLocation = styled.div`
 
   @media (max-width: 770px) {
     margin-top: 0;
+    gap: 10px;
   }
 `;
 
