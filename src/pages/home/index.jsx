@@ -20,6 +20,7 @@ function Home() {
 
   const [avatarUrl, setAvatarUrl] = useState(avatar);
   const [realName, setRealName] = useState("");
+  const [location, setLocation] = useState("");
 
   const [userNotFound, setUserNotFound] = useState(false);
   const [ticketGenerated, setTicketGenerated] = useState(false);
@@ -73,6 +74,7 @@ function Home() {
         if (data.name) {
           setRealName(data.name);
         }
+        setLocation(data.location);
       })
       .catch((error) => {
         console.error("Erro ao buscar usuário do GitHub:", error);
@@ -134,7 +136,10 @@ function Home() {
                 <img src={avatarUrl || avatar} alt="Perfil" />
               </div>
               <span>tripulante</span>
+              <div className="info">
               <h1>{realName || "seu nome aqui"}</h1>
+              <p>{location}</p>
+              </div>
             </User>
 
             <DivLocation>

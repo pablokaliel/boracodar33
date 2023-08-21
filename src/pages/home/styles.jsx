@@ -250,6 +250,19 @@ export const User = styled.div`
     text-transform: uppercase;
   }
 
+  .info{
+    text-align:center;
+  }
+
+  p{
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 1.05px;
+    text-transform: uppercase;
+  }
+
   h1 {
     color: #202024;
 
