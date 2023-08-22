@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
@@ -17,13 +17,14 @@ function Home() {
   const divResultRef = useRef(null);
 
   const [username, setUsername] = useState("");
-
   const [avatarUrl, setAvatarUrl] = useState(avatar);
   const [realName, setRealName] = useState("");
   const [location, setLocation] = useState("");
 
   const [userNotFound, setUserNotFound] = useState(false);
   const [ticketGenerated, setTicketGenerated] = useState(false);
+
+  const [searchCompleted, setSearchCompleted] = useState(false);
 
   const handleDownloadClick = () => {
     if (divResultRef.current) {
@@ -54,17 +55,20 @@ function Home() {
       return;
     }
 
+    setUserNotFound(false);
+    setTicketGenerated(false);
+    setAvatarUrl(avatar);
+    setRealName("");
+    setLocation("");
+
     const apiUrl = `https://api.github.com/users/${username}`;
 
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
           setUserNotFound(true);
-          setTicketGenerated(false);
           throw new Error(`Erro na solicitação: ${response.statusText}`);
         }
-        setUserNotFound(false);
-        setTicketGenerated(true);
         return response.json();
       })
       .then((data) => {
@@ -74,16 +78,32 @@ function Home() {
         if (data.name) {
           setRealName(data.name);
         }
-        setLocation(data.location);
+        if (data.location) {
+          setLocation(data.location);
+        }
+        setTicketGenerated(true);
       })
       .catch((error) => {
         console.error("Erro ao buscar usuário do GitHub:", error);
+      })
+      .finally(() => {
+        setSearchCompleted(true);
       });
   };
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
+
+  useEffect(() => {
+    if (ticketGenerated) {
+      const timeoutId = setTimeout(() => {
+        setSearchCompleted(true);
+      }, 2000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [ticketGenerated]);
 
   return (
     <Container>
@@ -98,67 +118,87 @@ function Home() {
                 <span>Ticket gerado com sucesso</span>
               </div>
             ) : (
-              <span>Digite seu usuário do GitHub</span>
+              <>
+                <span>Digite seu usuário do GitHub</span>
+                <DivInput>
+                  <div className="icon-container">
+                    <GithubLogo size={20} color="#202024" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Nome de usuário"
+                    onChange={handleUsernameChange}
+                  />
+                </DivInput>
+                <button onClick={fetchGitHubProfile}>
+                  <Ticket size={20} color="#fff" /> gerar meu ticket
+                </button>
+              </>
             )}
-            <DivInput>
-              <div className="icon-container">
-                <GithubLogo size={20} color="#202024" />
-              </div>
-              <input
-                type="text"
-                placeholder="Nome de usuário"
-                onChange={handleUsernameChange}
-              />
-            </DivInput>
-            {userNotFound && (
-              <p className="error">Usuário inválido. Verifique e tente novamente.</p>
+
+            {userNotFound && searchCompleted && (
+              <p className="error">
+                Usuário não encontrado. Verifique e tente novamente.
+              </p>
             )}
-            <button onClick={fetchGitHubProfile}>
-              <Ticket size={20} color="#fff" /> gerar meu ticket{" "}
-            </button>
+
             {ticketGenerated && (
               <button className="download" onClick={handleDownloadClick}>
-                {" "}
-                <Download size={20} color="#fff" /> fazer download{" "}
+                <Download size={20} color="#fff" /> fazer download
+              </button>
+            )}
+
+            {/* Botão para iniciar nova pesquisa */}
+            {ticketGenerated && (
+              <button
+                onClick={() => {
+                  setUserNotFound(false);
+                  setTicketGenerated(false);
+                  setSearchCompleted(false);
+                }}
+              >
+                Nova Pesquisa
               </button>
             )}
           </DivInfoGitHub>
         </DivTicket>
 
-        <DivResult ref={divResultRef}>
-          <DivLogo>
-            <img src={bgcardticket}/>
-          </DivLogo>
+        {ticketGenerated && !userNotFound && (
+          <DivResult ref={divResultRef}>
+            <DivLogo>
+              <img src={bgcardticket} />
+            </DivLogo>
 
-          <DivUser>
-            <User>
-              <div className="logoperfil">
-                <img src={avatarUrl || avatar} alt="Perfil" />
-              </div>
-              <span>tripulante</span>
-              <div className="info">
-              <h1>{realName || "seu nome aqui"}</h1>
-              <p>{location}</p>
-              </div>
-            </User>
+            <DivUser>
+              <User>
+                <div className="logoperfil">
+                  <img src={avatarUrl || avatar} alt="Perfil" />
+                </div>
+                <span>tripulante</span>
+                <div className="info">
+                  <h1>{realName || "seu nome aqui"}</h1>
+                  <p>{location}</p>
+                </div>
+              </User>
 
-            <DivLocation>
-              <Info>
-                <h1>evento</h1>
-                <h1>data</h1>
-                <h1>hora</h1>
-              </Info>
+              <DivLocation>
+                <Info>
+                  <h1>evento</h1>
+                  <h1>data</h1>
+                  <h1>hora</h1>
+                </Info>
 
-              <Response>
-                <h1>ia para devs</h1>
-                <h1>14 - 16 ago. 2023</h1>
-                <h1>ao vivo - 19h</h1>
-              </Response>
-            </DivLocation>
+                <Response>
+                  <h1>ia para devs</h1>
+                  <h1>14 - 16 ago. 2023</h1>
+                  <h1>ao vivo - 19h</h1>
+                </Response>
+              </DivLocation>
 
-            <img src={lines} alt="" />
-          </DivUser>
-        </DivResult>
+              <img src={lines} alt="" />
+            </DivUser>
+          </DivResult>
+        )}
       </Swapper>
     </Container>
   );
