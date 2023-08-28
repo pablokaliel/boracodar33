@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 
-import { Container, Swapper, DivTicket, DivInfoGitHub, DivInput, DivResult, DivLogo, DivUser, User, DivLocation, Info, Response } from "./styles";
+import { Container, Swapper, DivTicket, DivInfoGitHub, DivMotionResult, DivInput, DivResult, DivLogo, DivUser, User, DivLocation, Info, Response } from "./styles";
 
 import avatar from "../../assets/img-avatar.png";
 
@@ -108,7 +108,16 @@ function Home() {
   return (
     <Container>
       <Swapper>
-        <DivTicket>
+        <DivTicket
+          initial={{ x: -500 }}
+          animate={{ x: 0 }}
+          transition={{
+            duration: 0.5,
+            type: "spring",
+            stiffness: 100,
+            damping: 8,
+          }}
+        >
           <h1>Gere seu ticket e compartilhe com o mundo</h1>
 
           <DivInfoGitHub>
@@ -148,7 +157,6 @@ function Home() {
               </button>
             )}
 
-            {/* Botão para iniciar nova pesquisa */}
             {ticketGenerated && (
               <button
                 onClick={() => {
@@ -164,39 +172,61 @@ function Home() {
         </DivTicket>
 
         {ticketGenerated && !userNotFound && (
-          <DivResult ref={divResultRef}>
-            <DivLogo>
-              <img src={bgcardticket} />
-            </DivLogo>
+          <DivResult
+            ref={divResultRef}
+            initial={{ x: 500 }}
+            animate={{ x: 0 }}
+            transition={{
+              duration: 0.5,
+              type: "spring",
+              stiffness: 100,
+              damping: 8,
+            }}
+          >
+            <DivMotionResult
+              initial={{ y: 500 }}
+              animate={{ y: 0 }}
+              transition={{
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 8,
+                delay: 0.6,
+              }}
+            >
+              <DivLogo>
+                <img src={bgcardticket} />
+              </DivLogo>
 
-            <DivUser>
-              <User>
-                <div className="logoperfil">
-                  <img src={avatarUrl || avatar} alt="Perfil" />
-                </div>
-                <span>tripulante</span>
-                <div className="info">
-                  <h1>{realName || "seu nome aqui"}</h1>
-                  <p>{location}</p>
-                </div>
-              </User>
+              <DivUser>
+                <User>
+                  <div className="logoperfil">
+                    <img src={avatarUrl || avatar} alt="Perfil" />
+                  </div>
+                  <span>tripulante</span>
+                  <div className="info">
+                    <h1>{realName || "seu nome aqui"}</h1>
+                    <p>{location}</p>
+                  </div>
+                </User>
 
-              <DivLocation>
-                <Info>
-                  <h1>evento</h1>
-                  <h1>data</h1>
-                  <h1>hora</h1>
-                </Info>
+                <DivLocation>
+                  <Info>
+                    <h1>evento</h1>
+                    <h1>data</h1>
+                    <h1>hora</h1>
+                  </Info>
 
-                <Response>
-                  <h1>ia para devs</h1>
-                  <h1>14 - 16 ago. 2023</h1>
-                  <h1>ao vivo - 19h</h1>
-                </Response>
-              </DivLocation>
+                  <Response>
+                    <h1>ia para devs</h1>
+                    <h1>14 - 16 ago. 2023</h1>
+                    <h1>ao vivo - 19h</h1>
+                  </Response>
+                </DivLocation>
 
-              <img src={lines} alt="" />
-            </DivUser>
+                <img src={lines} alt="" />
+              </DivUser>
+            </DivMotionResult>
           </DivResult>
         )}
       </Swapper>

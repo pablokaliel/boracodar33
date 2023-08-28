@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 import bgticket from "../../assets/background-card-ticket.png";
+import { motion } from "framer-motion";
+
 
 export const Container = styled.div`
   display: flex;
@@ -10,6 +12,8 @@ export const Container = styled.div`
 
   width: 100%;
   height: 100vh;
+
+  overflow:hidden;
 `;
 
 export const Swapper = styled.div`
@@ -25,7 +29,7 @@ export const Swapper = styled.div`
   }
 `;
 
-export const DivTicket = styled.div`
+export const DivTicket = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -41,12 +45,7 @@ export const DivTicket = styled.div`
   }
 
   h1 {
-    background: linear-gradient(
-      90deg,
-      #dee0fc 0%,
-      #996dff 51.04%,
-      #bc9fff 100%
-    );
+    background: linear-gradient( 90deg, #dee0fc 0%, #996dff 51.04%, #bc9fff 100% );
     background-clip: text;
 
     -webkit-background-clip: text;
@@ -132,7 +131,7 @@ export const DivInfoGitHub = styled.div`
   }
 `;
 
-export const DivInput = styled.div`
+export const DivInput = styled(motion.div)`
   display: flex;
   align-items: center;
   align-self: stretch;
@@ -164,22 +163,30 @@ export const DivInput = styled.div`
     border-radius: 4px;
   }
 `;
-export const DivResult = styled.div`
+export const DivResult = styled(motion.div)`
   background-image: url(${bgticket});
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-
+  overflow:hidden;
   display: flex;
 
   padding: 38px 45px;
 
   color: #202024;
 
+  .divresult{
+    display:flex;
+  }
+
   @media (max-width: 770px) {
     width: 100%;
     padding: 15px;
   }
+`;
+
+export const DivMotionResult = styled(motion.div)`
+display:flex;
 `;
 
 export const DivLogo = styled.div`
